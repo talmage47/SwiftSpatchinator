@@ -10,8 +10,8 @@ import SwiftUI
 struct TaskAvatar: View {
     var label: String = ""
     var bodyColor: Color = .blue
-    var cornerRadius: CGFloat = 20
-    var size: CGFloat = 60
+    var cornerRadius: CGFloat = 10
+    var size: CGFloat = 40
     
     var body: some View {
         ZStack {
