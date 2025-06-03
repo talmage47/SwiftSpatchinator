@@ -26,4 +26,22 @@ class QueueItem {
 
         }
     }
+    
+    func startOnConcurrent() {
+        DispatchQueue.global().async {
+            while self.currentValue > 0 {
+                self.currentValue -= 1
+                sleep(1)
+            }
+        }
+    }
+    
+    func startOnSerial() {
+        Queues.serial.sync {
+            while self.currentValue > 0 {
+                self.currentValue -= 1
+                sleep(1)
+            }
+        }
+    }
 }
