@@ -8,13 +8,16 @@
 import Foundation
 
 class QueueItem {
+    
     private var timer: Timer?
     private(set) var currentValue: Int
     let initialValue: Int
+    let taskQualitySelection: QualitySelection
 
     init(range: ClosedRange<Int> = 5...15) {
         self.initialValue = Int.random(in: range)
         self.currentValue = initialValue
+        self.taskQualitySelection = selectedQuality
     }
 
     func startOnMain() {
