@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var qualityModel = QualitySelectionModel()
+    private var qualityModel = QualitySelectionModel.shared
     
     var body: some View {
         NavigationStack {
             VStack {
-                TaskLegend()
-                    .environmentObject(qualityModel)
+                TaskLegend(qualityModel: qualityModel)
                 GlobalView()
                 ConcurrentView()
                 SerialView()

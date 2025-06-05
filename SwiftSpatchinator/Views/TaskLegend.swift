@@ -7,10 +7,9 @@
 
 import SwiftUI
 
-let dictKeys: [QualitySelection] = Array(qualityDict.keys)
 
 struct TaskLegend: View {
-    @EnvironmentObject var selectedQuality: QualitySelectionModel
+    var qualityModel: QualitySelectionModel
     
     var body: some View {
         VStack {
@@ -18,25 +17,24 @@ struct TaskLegend: View {
                 .font(.body)
                 .frame(maxWidth: .infinity, alignment: .leading)
             HStack (alignment: .center){
-                Button(action: {
-                    selectedQuality = QualitySelection.userinitiated
-                }) {
-                    
-                }
-                
-//                ForEach(dictKeys, id: \.self) { qos in
-//                    if let qualityInformation = qualityDict[qos] {
-//                        Button(action: {
-//                            selectedQuality = qos
-//                        }) {
-//                            QualityButton(
-//                                label: qualityInformation.abbreviation,
-//                                buttonColor: qualityInformation.color,
-//                                isSelected: selectedQuality == qos
-//                            )
-//                        }
-//                    }
+//                Button(action: {
+//                    QualitySelectionModel.selectedQuality = QualitySelection.userinitiated
+//                }) {
+//                    
 //                }
+                
+                ForEach(qualityModel.qualityInformation, id:\.self) { arrayValue in
+                        Button(action: {
+                            qualityModel.selectedQuality = arrayValue.qos
+                        }) {
+                            QualityButton(
+                                label: arrayValue.abbreviation,
+                                buttonColor: arrayValue.color,
+                                isSelected: qualityModel.selectedQuality == arrayValue.qos
+                            )
+                        }
+                    }
+                
                 
 //                TaskAvatar(label: "UI", bodyColor: .blue)
 //                TaskAvatar(label: "IN", bodyColor: .red)
