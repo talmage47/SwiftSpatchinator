@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    private var qualityModel = QualitySelectionModel.shared
+    private var qualityModel = Model.shared
     
     var body: some View {
         NavigationStack {

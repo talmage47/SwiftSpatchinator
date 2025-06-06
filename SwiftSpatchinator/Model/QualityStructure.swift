@@ -1,5 +1,5 @@
 //
-//  QualityColors.swift
+//  QualityStructure.swift
 //  SwiftSpatchinator
 //
 //  Created by Talmage Gaisford on 6/3/25.

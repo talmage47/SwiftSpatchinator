@@ -33,32 +33,4 @@ class QueueItem {
             delegate.queueItemFinished(self)
         }
     }
-    
-    func startOnMain() {
-        DispatchQueue.main.async{
-            while self.currentValue > 0 {
-                self.currentValue -= 1
-                sleep(1)
-            }
-
-        }
-    }
-    
-    func startOnConcurrent() {
-        DispatchQueue.global(qos: selectedQuality).async {
-            while self.currentValue > 0 {
-                self.currentValue -= 1
-                sleep(1)
-            }
-        }
-    }
-    
-    func startOnSerial() {
-        Queues.serial.sync {
-            while self.currentValue > 0 {
-                self.currentValue -= 1
-                sleep(1)
-            }
-        }
-    }
 }

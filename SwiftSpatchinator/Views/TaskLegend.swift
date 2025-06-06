@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct TaskLegend: View {
-    var qualityModel: QualitySelectionModel
+    var qualityModel: Model
     
     var body: some View {
         VStack {
