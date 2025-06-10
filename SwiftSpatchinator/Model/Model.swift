@@ -22,39 +22,68 @@ class Model: QueueItemProtocol {
         QualityStructure(qos: .background, color: .purple, abbreviation: "BG")
         ]
     
-    let serialQueue = DispatchQueue(label: "com.talmage.swiftspatchinator.serial")
+    let serialQueue = DispatchQueue(
+        label: "com.SwiftSpatchinator.serialQueue",
+        qos: .background
+    )
+    
+    let concurrentQueue = DispatchQueue(
+        label: "com.SwiftSpatchinator.concurrentQueue",
+        qos: .background,
+        attributes: .concurrent
+    )
     
     var globalAvatar: [QueueItem] = []
     var concurrentAvatar: [QueueItem] = []
     var serialAvatar: [QueueItem] = []
     
     
-    func startMain() {
-        var newQueueItem: QueueItem = QueueItem()
+    func startGlobal() {
         
-        DispatchQueue.main(qos: selectedQuality).async{
+        var newQueueItem: QueueItem = QueueItem()
+        let newWorkItem: DispatchWorkItem = DispatchWorkItem(qos: DispatchQoS(qosClass:selectedQuality, relativePriority: 0)) {
             newQueueItem.run()
         }
+        
+        DispatchQueue.global(qos: .default).async(execute: newWorkItem)
+        
+        
     }
     
     func startConcurrent() {
         
+        var newQueueItem: QueueItem = QueueItem()
+        let newWorkItem: DispatchWorkItem = DispatchWorkItem(qos: DispatchQoS(qosClass:selectedQuality, relativePriority: 0)) {
+            newQueueItem.run()
+        }
         
+        concurrentQueue.async(execute: newWorkItem)
         
-        DispatchQueue.global(qos: selectedQuality).async {}
     }
     
     func startSerial() {
         
+        var newQueueItem: QueueItem = QueueItem()
+        let newWorkItem: DispatchWorkItem = DispatchWorkItem(qos: DispatchQoS(qosClass:selectedQuality, relativePriority: 0)) {
+            newQueueItem.run()
+        }
         
-        serialQueue(qos: selectedQuality).sync {}
+        serialQueue.async(execute: newWorkItem)
         
     }
     
     // MARK: QueueItemProtocol Methods
     
     func queueItemFinished(_ item: QueueItem) {
-        <#code#>
+        if let index = globalAvatar.firstIndex(of: item) {
+            globalAvatar.remove(at: index)
+        }
+        if let index = concurrentAvatar.firstIndex(of: item) {
+            concurrentAvatar.remove(at: index)
+        }
+        if let index = serialAvatar.firstIndex(of: item) {
+            serialAvatar.remove(at: index)
+        }
     }
     
 }

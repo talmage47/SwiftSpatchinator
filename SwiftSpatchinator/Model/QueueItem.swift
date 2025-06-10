@@ -11,7 +11,7 @@ protocol QueueItemProtocol {
     func queueItemFinished(_ item: QueueItem)
 }
 
-class QueueItem {
+class QueueItem: Equatable {
     
     private(set) var currentValue: Int
     let initialValue: Int
@@ -33,4 +33,8 @@ class QueueItem {
             delegate.queueItemFinished(self)
         }
     }
+    
+    static func == (lhs: QueueItem, rhs: QueueItem) -> Bool {
+            return lhs === rhs
+        }
 }

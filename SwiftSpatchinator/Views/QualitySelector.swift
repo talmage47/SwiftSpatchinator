@@ -8,8 +8,8 @@
 import SwiftUI
 
 
-struct TaskLegend: View {
-    var qualityModel: Model
+struct QualitySelector: View {
+    var model: Model
     
     var body: some View {
         VStack {
@@ -23,14 +23,14 @@ struct TaskLegend: View {
 //                    
 //                }
                 
-                ForEach(qualityModel.qualityInformation, id:\.self) { arrayValue in
+                ForEach(model.qualityInformation, id:\.self) { arrayValue in
                         Button(action: {
-                            qualityModel.selectedQuality = arrayValue.qos
+                            model.selectedQuality = arrayValue.qos
                         }) {
                             QualityButton(
                                 label: arrayValue.abbreviation,
                                 buttonColor: arrayValue.color,
-                                isSelected: qualityModel.selectedQuality == arrayValue.qos
+                                isSelected: model.selectedQuality == arrayValue.qos
                             )
                         }
                     }
@@ -48,5 +48,5 @@ struct TaskLegend: View {
 }
 
 #Preview {
-    TaskLegend()
+    QualitySelector(model: <#Model#>)
 }
