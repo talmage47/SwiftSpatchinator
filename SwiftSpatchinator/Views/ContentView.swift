@@ -14,9 +14,9 @@ struct ContentView: View {
         NavigationStack {
             VStack {
                 QualitySelector(model: model)
-                GlobalView()
-                ConcurrentView()
-                SerialView()
+                GlobalView(model: model)
+                ConcurrentView(model: model)
+                SerialView(model: model)
             }
                 
             Spacer()

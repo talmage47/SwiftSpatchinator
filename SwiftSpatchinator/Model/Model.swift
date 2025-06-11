@@ -12,7 +12,7 @@ import SwiftUI
 class Model: QueueItemProtocol {
     static let shared = Model()
     
-    var selectedQuality: DispatchQoS.QoSClass = DispatchQoS.QoSClass.default
+    var selectedQuality: QualityStructure = QualityStructure(qos: .default, color: .green, abbreviation: "DF")
     
     let qualityInformation: [QualityStructure] = [
         QualityStructure(qos: .userInteractive, color: .red, abbreviation: "UI"),
@@ -38,51 +38,58 @@ class Model: QueueItemProtocol {
     var serialAvatar: [QueueItem] = []
     
     
-    func startGlobal() {
+    func startGlobal(flags: DispatchWorkItemFlags = []) {
         
-        var newQueueItem: QueueItem = QueueItem()
-        let newWorkItem: DispatchWorkItem = DispatchWorkItem(qos: DispatchQoS(qosClass:selectedQuality, relativePriority: 0)) {
+        let newQueueItem: QueueItem = QueueItem(selectedQuality.qos,flags, self)
+        let newWorkItem: DispatchWorkItem = DispatchWorkItem(qos: DispatchQoS(qosClass:selectedQuality.qos, relativePriority: 0), flags: flags) {
             newQueueItem.run()
         }
         
         DispatchQueue.global(qos: .default).async(execute: newWorkItem)
+        globalAvatar.append(newQueueItem)
         
         
     }
     
-    func startConcurrent() {
+    func startConcurrent(flags: DispatchWorkItemFlags = []) {
         
-        var newQueueItem: QueueItem = QueueItem()
-        let newWorkItem: DispatchWorkItem = DispatchWorkItem(qos: DispatchQoS(qosClass:selectedQuality, relativePriority: 0)) {
+        let newQueueItem: QueueItem = QueueItem(selectedQuality.qos,flags, self)
+        let newWorkItem: DispatchWorkItem = DispatchWorkItem(qos: DispatchQoS(qosClass: selectedQuality.qos, relativePriority: 0), flags: flags) {
             newQueueItem.run()
         }
         
         concurrentQueue.async(execute: newWorkItem)
+        concurrentAvatar.append(newQueueItem)
         
     }
     
-    func startSerial() {
+    func startSerial(flags: DispatchWorkItemFlags = []) {
         
-        var newQueueItem: QueueItem = QueueItem()
-        let newWorkItem: DispatchWorkItem = DispatchWorkItem(qos: DispatchQoS(qosClass:selectedQuality, relativePriority: 0)) {
+        let newQueueItem: QueueItem = QueueItem(selectedQuality.qos,flags, self)
+        let newWorkItem: DispatchWorkItem = DispatchWorkItem(qos: DispatchQoS(qosClass:selectedQuality.qos, relativePriority: 0), flags: flags) {
             newQueueItem.run()
         }
         
         serialQueue.async(execute: newWorkItem)
+        serialAvatar.append(newQueueItem)
         
     }
     
     // MARK: QueueItemProtocol Methods
     
     func queueItemFinished(_ item: QueueItem) {
-        if let index = globalAvatar.firstIndex(of: item) {
-            globalAvatar.remove(at: index)
-        }
-        if let index = concurrentAvatar.firstIndex(of: item) {
-            concurrentAvatar.remove(at: index)
-        }
-        if let index = serialAvatar.firstIndex(of: item) {
-            serialAvatar.remove(at: index)
+        DispatchQueue.main.async { [weak self] in
+            if let self = self {
+                if let index = globalAvatar.firstIndex(of: item) {
+                    globalAvatar.remove(at: index)
+                }
+                if let index = concurrentAvatar.firstIndex(of: item) {
+                    concurrentAvatar.remove(at: index)
+                }
+                if let index = serialAvatar.firstIndex(of: item) {
+                    serialAvatar.remove(at: index)
+                }
+            }
         }
     }
     

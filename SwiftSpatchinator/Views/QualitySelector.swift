@@ -25,12 +25,12 @@ struct QualitySelector: View {
                 
                 ForEach(model.qualityInformation, id:\.self) { arrayValue in
                         Button(action: {
-                            model.selectedQuality = arrayValue.qos
+                            model.selectedQuality = arrayValue
                         }) {
                             QualityButton(
                                 label: arrayValue.abbreviation,
                                 buttonColor: arrayValue.color,
-                                isSelected: model.selectedQuality == arrayValue.qos
+                                isSelected: model.selectedQuality.qos == arrayValue.qos
                             )
                         }
                     }
@@ -48,5 +48,5 @@ struct QualitySelector: View {
 }
 
 #Preview {
-    QualitySelector(model: <#Model#>)
+    QualitySelector(model: Model())
 }

@@ -19,7 +19,7 @@ struct QualityButton: View {
         TaskAvatar(label: label, bodyColor: buttonColor, cornerRadius: cornerRadius, size: size)
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .circular)
-                    .fill(isSelected ? Color.clear : Color.gray.opacity(0.5))
+                    .fill(isSelected ? Color.clear : Color.black.opacity(0.5))
                     .frame(width: size, height: size)
             )
     }

@@ -11,21 +11,34 @@ protocol QueueItemProtocol {
     func queueItemFinished(_ item: QueueItem)
 }
 
-class QueueItem: Equatable {
+@Observable
+class QueueItem: Equatable, Hashable {
     
+    let priority: DispatchQoS.QoSClass
     private(set) var currentValue: Int
     let initialValue: Int
+    let barrier: Bool
     let delegate: QueueItemProtocol?
 
-    init(delegate: QueueItemProtocol? = nil) {
+    init(_ priority: DispatchQoS.QoSClass, _ flags: DispatchWorkItemFlags = [], _ delegate: QueueItemProtocol? = nil) {
+        self.priority = priority
         self.initialValue = Int.random(in: 5...15)
         self.currentValue = initialValue
         self.delegate = delegate
+        
+        if !flags.isEmpty {
+            self.barrier = true
+        }
+        else{
+            self.barrier = false
+        }
     }
 
     func run() {
         while self.currentValue > 0 {
-            self.currentValue -= 1
+            DispatchQueue.main.sync {
+                self.currentValue -= 1
+            }
             sleep(1)
             
         }
@@ -36,5 +49,9 @@ class QueueItem: Equatable {
     
     static func == (lhs: QueueItem, rhs: QueueItem) -> Bool {
             return lhs === rhs
+        }
+    
+    func hash(into hasher: inout Hasher) {
+            hasher.combine(ObjectIdentifier(self))
         }
 }

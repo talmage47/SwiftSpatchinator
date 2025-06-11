@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct ConcurrentView: View {
+    var model: Model
+    
+    let columns = [
+            GridItem(.adaptive(minimum: 40), spacing: 5)
+        ]
+    
     var body: some View {
         VStack {
             HStack (alignment: .top){
@@ -16,7 +22,7 @@ struct ConcurrentView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer()
                 Button(action: {
-                    startProcess()
+                    model.startConcurrent()
                 }) {
                     VStack(spacing: 4) {
                         Image(systemName: "plus.square.on.square")
@@ -27,7 +33,7 @@ struct ConcurrentView: View {
                     }
                 }
                 Button(action: {
-                    startProcess()
+                    model.startConcurrent(flags: .barrier)
                 }) {
                     VStack(spacing: 4) {
                         Image(systemName: "plus.square.fill.on.square.fill")
@@ -38,8 +44,24 @@ struct ConcurrentView: View {
                     }
                 }
             }
-            HStack (alignment: .center){
-                
+            LazyVGrid(columns: columns, alignment: .center, spacing: 5){
+                ForEach(model.concurrentAvatar, id:\.self) { arrayValue
+                    in
+                    if arrayValue.barrier {
+                        BarrierAvatar(
+                            label: String(arrayValue.currentValue),
+                            barrierColor: model.selectedQuality.color
+                        )
+                        .transition(.opacity)
+                    }
+                    else {
+                        TaskAvatar(
+                            label: String(arrayValue.currentValue),
+                            bodyColor: model.selectedQuality.color
+                        )
+                        .transition(.opacity)
+                    }
+                }
                 Spacer()
             }
         }
@@ -48,9 +70,6 @@ struct ConcurrentView: View {
 }
 
 #Preview {
-    ConcurrentView()
+    ConcurrentView(model: Model())
 }
 
-func startProcess() {
-    // do nothing
-}

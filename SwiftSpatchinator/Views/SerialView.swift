@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SerialView: View {
+    var model: Model
+    
     var body: some View {
         VStack {
             HStack (alignment: .top){
@@ -16,7 +18,7 @@ struct SerialView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer()
                 Button(action: {
-                    startProcess()
+                    model.startSerial()
                 }) {
                     VStack(spacing: 4) {
                         Image(systemName: "plus.square.on.square")
@@ -27,7 +29,7 @@ struct SerialView: View {
                     }
                 }
                 Button(action: {
-                    startProcess()
+                    model.startSerial(flags: .barrier)
                 }) {
                     VStack(spacing: 4) {
                         Image(systemName: "plus.square.fill.on.square.fill")
@@ -39,7 +41,24 @@ struct SerialView: View {
                 }
             }
             HStack (alignment: .center){
-                
+                ForEach(model.serialAvatar, id:\.self) { arrayValue
+                    in
+                    
+                    if arrayValue.barrier {
+                        BarrierAvatar(
+                            label: String(arrayValue.currentValue),
+                            barrierColor: model.selectedQuality.color
+                        )
+                        .transition(.opacity)
+                    }
+                    else {
+                        TaskAvatar(
+                            label: String(arrayValue.currentValue),
+                            bodyColor: model.selectedQuality.color
+                        )
+                        .transition(.opacity)
+                    }
+                }
                 Spacer()
             }
         }
@@ -48,5 +67,5 @@ struct SerialView: View {
 }
 
 #Preview {
-    SerialView()
+    SerialView(model: Model())
 }
